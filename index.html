@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Noor ❤️</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    overflow:hidden;
+    background:linear-gradient(135deg,#0f172a,#1e1b4b,#4c1d95);
+    color:white;
+    height:100vh;
+}
+
+.screen{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    font-size:clamp(2rem,8vw,4rem);
+    text-shadow:
+        0 0 10px #fff,
+        0 0 20px #ff66cc,
+        0 0 40px #ff66cc;
+}
+
+p{
+    margin-top:15px;
+    max-width:600px;
+    line-height:1.6;
+}
+
+button{
+    margin-top:25px;
+    border:none;
+    padding:14px 28px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:1rem;
+    font-weight:bold;
+    background:linear-gradient(135deg,#ff5f6d,#ffc371);
+    color:white;
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.hidden{
+    display:none;
+}
+
+#countdown{
+    font-size:6rem;
+    font-weight:bold;
+}
+
+#message{
+    white-space:pre-line;
+    margin-top:25px;
+    min-height:180px;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    animation:float 8s linear infinite;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(0);
+        opacity:1;
+    }
+    to{
+        transform:translateY(-120vh);
+        opacity:0;
+    }
+}
+</style>
+</head>
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<!-- Intro -->
+<div id="intro" class="screen">
+    <h1>Hey Noor 👀</h1>
+    <p>
+        I know we're online friends...
+        but I made something for you.
+    </p>
+    <button onclick="start()">Tap Here 🎁</button>
+</div>
+
+<!-- Countdown -->
+<div id="countScreen" class="screen hidden">
+    <div id="countdown">3</div>
+</div>
+
+<!-- Birthday -->
+<div id="birthday" class="screen hidden">
+    <h1>🎉 HAPPY BIRTHDAY NOOR 🎉</h1>
+    <div id="message"></div>
+
+    <button id="surpriseBtn" class="hidden" onclick="extraSurprise()">
+        One More Surprise 🎁
+    </button>
+</div>
+
+<script>
+const intro = document.getElementById("intro");
+const countScreen = document.getElementById("countScreen");
+const birthday = document.getElementById("birthday");
+
+function start(){
+    intro.classList.add("hidden");
+    countScreen.classList.remove("hidden");
+
+    let count = 3;
+    const el = document.getElementById("countdown");
+
+    const timer = setInterval(()=>{
+        count--;
+        if(count>0){
+            el.textContent = count;
+        }else{
+            clearInterval(timer);
+            showBirthday();
+        }
+    },1000);
+}
+
+function showBirthday(){
+    countScreen.classList.add("hidden");
+    birthday.classList.remove("hidden");
+
+    const text =
+`Dear Noor,
+
+Thank you for being such an amazing friend.
+
+Even though we're online friends,
+I'm really glad we met.
+
+I hope your birthday is full of happiness,
+laughter, good memories, and lots of cake 🍰
+
+You deserve an incredible year ahead.
+
+❤️`;
+
+    let i = 0;
+    const message = document.getElementById("message");
+
+    const typing = setInterval(()=>{
+        message.textContent += text.charAt(i);
+        i++;
+
+        if(i >= text.length){
+            clearInterval(typing);
+            document.getElementById("surpriseBtn")
+            .classList.remove("hidden");
+        }
+    },40);
+}
+
+function extraSurprise(){
+    alert(
+`Fun Facts About Noor
+
+✅ Officially awesome
+✅ Certified cool person
+✅ Birthday girl today
+✅ Deserves lots of cake 🍰
+✅ One of my favorite people to talk to ❤️`
+    );
+}
+
+/* Hearts */
+setInterval(()=>{
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random()*100+"vw";
+    heart.style.fontSize =
+        (20 + Math.random()*20)+"px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(()=>{
+        heart.remove();
+    },8000);
+
+},700);
+
+/* Fireworks */
+const canvas =
+document.getElementById("fireworks");
+
+const ctx = canvas.getContext("2d");
+
+function resize(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+}
+
+resize();
+window.addEventListener("resize",resize);
+
+let particles = [];
+
+function launch(){
+    const x = Math.random()*canvas.width;
+    const y = Math.random()*canvas.height*0.5;
+
+    for(let i=0;i<80;i++){
+        particles.push({
+            x,y,
+            dx:(Math.random()-0.5)*8,
+            dy:(Math.random()-0.5)*8,
+            life:100,
+            hue:Math.random()*360
+        });
+    }
+}
+
+function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.15)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,index)=>{
+        p.x+=p.dx;
+        p.y+=p.dy;
+        p.life--;
+
+        ctx.fillStyle=
+        `hsl(${p.hue},100%,60%)`;
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2.5,0,Math.PI*2);
+        ctx.fill();
+
+        if(p.life<=0){
+            particles.splice(index,1);
+        }
+    });
+
+    requestAnimationFrame(animate);
+}
+
+setInterval(launch,700);
+animate();
+</script>
+
+</body>
+</html>
